@@ -76,7 +76,7 @@ private:
 public:
 	std::string Cookies;
 	WebClient();
-	~WebClient();
+	virtual ~WebClient();
 	Proxy *Proxy = NULL;
 	CURLcode DownloadFile(const std::string & strUrl, const std::string & filename, int nTimeout = 20);
 	CURLcode HttpGet(const std::string & strUrl, std::string & strResponse, int nTimeout = 20);

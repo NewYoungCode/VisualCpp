@@ -1,8 +1,8 @@
 #pragma once
 #include <iostream>
 #include <windows.h>
-#include "stdio.h"
-#include "winsock.h"
+#include <stdio.h>
+#include <winsock.h>
 #include <mysql/mysql.h>
 #pragma comment(lib,"libmysql.lib")
 #include <vector>
@@ -29,7 +29,7 @@ public:
 	bool  ExecuteQuery(const std::string &sql, std::string &result);
 	/*Ö´ÐÐÔöÉ¾¸Ä*/
 	size_t ExecuteNoQuery(const std::string &sql);
-	~MySqlClient();
+	virtual ~MySqlClient();
 };
 
 inline bool MySqlClient::OpenConn()

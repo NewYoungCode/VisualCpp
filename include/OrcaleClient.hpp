@@ -20,7 +20,7 @@ private:
 	Environment *outEnv = NULL;
 	Connection* outConn = NULL;
 public:
-	~OrcaleClient() {
+	virtual ~OrcaleClient() {
 	}
 	OrcaleClient(const std::string& host, unsigned int port, const std::string& user, const std::string& pwd, const std::string& server_name, const std::string& charset = "UTF8");
 	void CloseConn();

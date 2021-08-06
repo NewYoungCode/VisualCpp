@@ -1,5 +1,4 @@
-﻿
-#include "os.h"
+﻿#include "os.h"
 #include "Base64.hpp"
 #include "FileSystem.hpp"
 #include "GdiPlus.hpp"
@@ -8,10 +7,6 @@
 #include "Socket.hpp"
 #include "Text.hpp"
 #include "WinTool.hpp"
-
-std::string test(const char*str) {
-	return std::string(str);
-}
 
 int main(int count, char*args[]) {
 	auto a = WinTool::FindProcessId("WeChatApp.exe").at(0);

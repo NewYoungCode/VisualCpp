@@ -2,7 +2,7 @@
 #include <time.h>
 namespace Time {
 	namespace Now {
-		inline  std::string ToString(const std::string &format="yyyy-MM-dd hh:mm:ss") {
+		inline  std::string ToString(const std::string &format = "yyyy-MM-dd hh:mm:ss") {
 			SYSTEMTIME time;
 			GetLocalTime(&time);
 			std::string  year = std::to_string((WORD)time.wYear);//年
@@ -26,6 +26,18 @@ namespace Time {
 			formatStr = Text::ReplaceAll(formatStr, "ss", Second);
 			formatStr = Text::ReplaceAll(formatStr, "mmmm", wMilliseconds);
 			return formatStr;
+		}
+
+		template<class T>
+		//统计函数耗时时间
+		inline time_t StopWatch(const T&_func) {
+			auto beg_t = std::chrono::system_clock::now();    //起始时间
+			_func();
+			auto end_t = std::chrono::system_clock::now();    //结束时间
+			std::chrono::duration<double> diff = end_t - beg_t;//时间间隔s
+			time_t total = std::chrono::duration_cast<std::chrono::milliseconds>(diff).count();//时间间隔ms
+			printf("Elapsed :%d ms\n", total);
+			return total;
 		}
 	}
 };
