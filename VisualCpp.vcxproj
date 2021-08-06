@@ -91,10 +91,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>./include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>./lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -106,10 +108,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>./include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>./lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -123,12 +127,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>./include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>./lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -142,16 +148,52 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>./include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>./lib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="VisualCpp.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Base64.hpp" />
+    <ClInclude Include="include\Common.hpp" />
+    <ClInclude Include="include\ConfigJson.hpp" />
+    <ClInclude Include="include\FileSystem.hpp" />
+    <ClInclude Include="include\GdiPlus.hpp" />
+    <ClInclude Include="include\HttpUtility.hpp" />
+    <ClInclude Include="include\Json.hpp" />
+    <ClInclude Include="include\Md5.hpp" />
+    <ClInclude Include="include\MySqlClient.hpp" />
+    <ClInclude Include="include\OrcaleClient.hpp" />
+    <ClInclude Include="include\os.h" />
+    <ClInclude Include="include\Printer.hpp" />
+    <ClInclude Include="include\Socket.hpp" />
+    <ClInclude Include="include\Text.hpp" />
+    <ClInclude Include="include\Time.hpp" />
+    <ClInclude Include="include\WebClient.hpp" />
+    <ClInclude Include="include\WinTool.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\json_lib.lib" />
+    <Library Include="lib\json_libd.lib" />
+    <Library Include="lib\libcurl.lib" />
+    <Library Include="lib\libcurld.lib" />
+    <Library Include="lib\libeay32.lib" />
+    <Library Include="lib\libmysql.lib" />
+    <Library Include="lib\libmysqld.lib" />
+    <Library Include="lib\oraocci12.lib" />
+    <Library Include="lib\oraocci12d.lib" />
+    <Library Include="lib\ssleay32.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dll\dll.rar" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
