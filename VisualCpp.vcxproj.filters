@@ -75,6 +75,9 @@
     <ClInclude Include="include\WinTool.hpp">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\ThreadPool.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\json_lib.lib">

@@ -176,6 +176,7 @@
     <ClInclude Include="include\Printer.hpp" />
     <ClInclude Include="include\Socket.hpp" />
     <ClInclude Include="include\Text.hpp" />
+    <ClInclude Include="include\ThreadPool.hpp" />
     <ClInclude Include="include\Time.hpp" />
     <ClInclude Include="include\WebClient.hpp" />
     <ClInclude Include="include\WinTool.hpp" />
