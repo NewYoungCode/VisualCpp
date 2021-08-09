@@ -78,6 +78,9 @@
     <ClInclude Include="include\ThreadPool.hpp">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\ConfigIni.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\json_lib.lib">

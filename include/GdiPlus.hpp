@@ -23,18 +23,18 @@ namespace Gdiplus {
 }
 
 namespace Gdiplus {
-	void Init() {
+	inline void Init() {
 		if (gdiplusToken == NULL) {
 			Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 			Gdiplus::GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);//初始化gdi+
 		}
 	}
-	void CleanUp() {
+	inline void CleanUp() {
 		if (gdiplusToken) {
 			Gdiplus::GdiplusShutdown(gdiplusToken); //关闭gdi+
 		}
 	}
-	bool CutBitmap(Gdiplus::Bitmap & bitmap, const Gdiplus::Rect  & rect, Gdiplus::Bitmap  & outBitmap) {
+	inline bool CutBitmap(Gdiplus::Bitmap & bitmap, const Gdiplus::Rect  & rect, Gdiplus::Bitmap  & outBitmap) {
 		try
 		{
 			for (int y = rect.Y; y < rect.Y + rect.Height; y++)
@@ -54,7 +54,7 @@ namespace Gdiplus {
 			return false;
 		}
 	}
-	int GetEncoderClsid(const WCHAR* format, CLSID* pClsid)
+	inline int GetEncoderClsid(const WCHAR* format, CLSID* pClsid)
 	{
 		UINT  num = 0;          // number of image encoders
 		UINT  size = 0;         // size of the image encoder array in bytes
@@ -82,7 +82,7 @@ namespace Gdiplus {
 		return -1;  // Failure
 	}
 	//保存图片
-	bool SaveAs(Gdiplus::Image* image, const std::string& out_filename, ImageFormat imgFormat) {
+	inline bool SaveAs(Gdiplus::Image* image, const std::string& out_filename, ImageFormat imgFormat) {
 		int bytes = ::MultiByteToWideChar(CP_ACP, 0, out_filename.c_str(), out_filename.size(), NULL, 0);
 		std::wstring wstrCmd;
 		wstrCmd.resize(bytes);
@@ -104,7 +104,7 @@ namespace Gdiplus {
 		}
 		return false;
 	}
-	BOOL __SaveBitmapToFile__(LPCTSTR lpszFilePath, HBITMAP hBm)
+	inline BOOL __SaveBitmapToFile__(LPCTSTR lpszFilePath, HBITMAP hBm)
 	{
 		//  定义位图文件表头
 		BITMAPFILEHEADER bmfh;
@@ -192,7 +192,7 @@ namespace Gdiplus {
 		CloseHandle(hFile);
 		return TRUE;
 	}
-	bool CutWindowBitmap(HWND hwnd, const std::string&filename) {
+	inline bool CutWindowBitmap(HWND hwnd, const std::string&filename) {
 		RECT rect;
 		::GetWindowRect(hwnd, &rect);
 		int x = rect.left, y = rect.top, width = rect.right - rect.left, height = rect.bottom - rect.top;
