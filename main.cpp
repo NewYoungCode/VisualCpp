@@ -18,6 +18,11 @@ void  test(curl_off_t total, curl_off_t now, float rate) {
 
 int main(int count, char*args[]) {
 
+
+
+
+	char bffff[]{0xe9 };
+
 	for (;;) {
 		WebClient wc;
 		wc.AddHeader("User-Agent", "不知名浏览器");
