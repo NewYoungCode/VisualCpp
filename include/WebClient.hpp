@@ -17,11 +17,11 @@
 #pragma comment(lib,"wldap32.lib")//curl需要的库
 #pragma comment(lib,"ws2_32.lib") //curl需要的库
 //接收响应body
-extern size_t g_curl_receive_data(char *contents, size_t size, size_t nmemb, void *respone);
+extern size_t g_curl_receive_callback(char *contents, size_t size, size_t nmemb, void *respone);
 //接收下载文件
 extern size_t g_curl_download_callback(char *contents, size_t size, size_t nmemb, void *_fielname);
 //接受上传或者下载进度
-extern int g_curl_progress_callback(void *clientp, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow);
+extern int g_curl_progress_callback(void *ptr, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow);
 //下载进度回调函数模型
 typedef std::function<void(curl_off_t total, curl_off_t now, float rate)> ProgressFunc;
 
@@ -99,7 +99,7 @@ inline WebClient::~WebClient() {
 }
 
 //定义
-inline size_t g_curl_receive_data(char *contents, size_t size, size_t nmemb, void *respone) {
+inline size_t g_curl_receive_callback(char *contents, size_t size, size_t nmemb, void *respone) {
 	size_t count = size * nmemb;
 	std::string *str = (std::string*)respone;
 	(*str).append(contents, count);
@@ -141,11 +141,11 @@ inline CURL* WebClient::Init(const std::string &strUrl, std::string& strResponse
 	}
 	curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);	// 验证对方的SSL证书
 	curl_easy_setopt(curl, CURLOPT_SSL_VERIFYHOST, false);	//根据主机验证证书的名称
-	curl_easy_setopt(curl, CURLOPT_URL, strUrl.c_str());
-	curl_easy_setopt(curl, CURLOPT_TIMEOUT, nTimeout);
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, g_curl_receive_data);
-	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &strResponse);
-	
+	curl_easy_setopt(curl, CURLOPT_URL, strUrl.c_str());//设置url地址
+	curl_easy_setopt(curl, CURLOPT_TIMEOUT, nTimeout);//设置超时
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, g_curl_receive_callback);//接受回调
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &strResponse);//
+
 	for (auto &it : Header) {
 		auto hd = it.first + ":" + it.second;
 		curl_header = curl_slist_append(curl_header, hd.c_str());
@@ -197,7 +197,6 @@ inline int WebClient::HttpPost(const std::string &url, const std::string &data, 
 	curl_easy_setopt(curl, CURLOPT_POST, true);
 	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, data.c_str());
 	CURLcode code = curl_easy_perform(curl);
-
 	return CleanUp(curl, code);
 };
 inline int WebClient::UploadFile(const std::string &url, const std::string &filename, const std::string &field, std::string &respone, const ProgressFunc&progressCallback, int _timeout) {
