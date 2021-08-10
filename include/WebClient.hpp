@@ -32,7 +32,7 @@ public:
 	curl_proxytype proxytype = CURLPROXY_SOCKS5;
 	std::string user;
 	std::string password;
-	Proxy(const std::string &host, size_t port, const curl_proxytype &curl_proxytype = CURLPROXY_SOCKS5, const std::string& user = "", const std::string&password = "") {
+	inline Proxy(const std::string &host, size_t port, const curl_proxytype &curl_proxytype = CURLPROXY_SOCKS5, const std::string& user = "", const std::string&password = "") {
 		this->host = host;
 		this->port = port;
 		this->proxytype = curl_proxytype;
@@ -74,11 +74,16 @@ class WebClient
 private:
 	CURL*  Init(const std::string &url, std::string& resp, int timeOut);
 	long CleanUp(CURL* curl, CURLcode code);
+	std::map<std::string, std::string> Header;
+	struct curl_slist *curl_header = NULL;
 public:
 	std::string Cookies;
 	WebClient();
 	virtual ~WebClient();
 	Proxy *Proxy = NULL;
+	void AddHeader(const std::string&key, const std::string&value);
+	void RemoveHeader(const std::string&key);
+
 	int DownloadFile(const std::string & strUrl, const std::string & filename, const ProgressFunc&progressCallback = NULL, int nTimeout = 20);
 	int HttpGet(const std::string & strUrl, std::string & strResponse, int nTimeout = 20);
 	int HttpPost(const std::string & strUrl, const std::string & data, std::string & respone, int nTimeout = 20);
@@ -91,8 +96,8 @@ inline WebClient::~WebClient() {
 	if (this->Proxy) {
 		delete this->Proxy;
 	}
-	Cookies.clear();
-};
+}
+
 //定义
 inline size_t g_curl_receive_data(char *contents, size_t size, size_t nmemb, void *respone) {
 	size_t count = size * nmemb;
@@ -140,6 +145,12 @@ inline CURL* WebClient::Init(const std::string &strUrl, std::string& strResponse
 	curl_easy_setopt(curl, CURLOPT_TIMEOUT, nTimeout);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, g_curl_receive_data);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, &strResponse);
+	
+	for (auto &it : Header) {
+		auto hd = it.first + ":" + it.second;
+		curl_header = curl_slist_append(curl_header, hd.c_str());
+	}
+	curl_easy_setopt(curl, CURLOPT_HTTPHEADER, curl_header);
 	return curl;
 };
 inline long WebClient::CleanUp(CURL* curl, CURLcode code) {
@@ -160,6 +171,11 @@ inline long WebClient::CleanUp(CURL* curl, CURLcode code) {
 			cookies = cookies->next;
 			i++;
 		}
+	}
+
+	if (curl_header) {
+		curl_slist_free_all(curl_header);
+		curl_header = NULL;
 	}
 	curl_easy_cleanup(curl);
 	return RESPONSE_CODE;
@@ -212,16 +228,14 @@ inline int WebClient::UploadFile(const std::string &url, const std::string &file
 };
 inline int WebClient::SubmitForm(const std::string &strUrl, const std::vector<Form::Field>& fieldValues, std::string& respone, int nTimeout) {
 
+	AddHeader("Content-Type", "multipart/form-data");
 	CURL* curl = Init(strUrl, respone, nTimeout);
 	if (!curl) {
 		return CURLE_FAILED_INIT;
 	}
-	struct curl_slist*      headerlist = NULL;
 	struct curl_httppost*    formpost = NULL;
 	struct curl_httppost*    lastptr = NULL;
 	// 设置表头，表头内容可能不同
-	headerlist = curl_slist_append(headerlist, "Content-Type:multipart/form-data");
-	curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headerlist);
 	for (auto &item : fieldValues) {
 		if (item.FieldType == Form::FieldType::File) {
 			curl_formadd(&formpost, &lastptr,
@@ -241,7 +255,6 @@ inline int WebClient::SubmitForm(const std::string &strUrl, const std::vector<Fo
 	if (formpost) {
 		curl_formfree(formpost);
 	}
-	curl_slist_free_all(headerlist);
 	return CleanUp(curl, code);
 
 };
@@ -251,6 +264,7 @@ inline int WebClient::DownloadFile(const std::string &url, const std::string &_f
 	if (!curl) {
 		return CURLE_FAILED_INIT;
 	}
+	File::Delete(_filename);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, g_curl_download_callback);//接受下载的回调函数
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, _filename.c_str()); //保存文件名
 
@@ -280,4 +294,12 @@ inline int WebClient::FtpDownLoad(const std::string& strUrl, const std::string&u
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, outFileName.c_str());
 	CURLcode code = curl_easy_perform(curl);
 	return CleanUp(curl, code);
+}
+inline void WebClient::AddHeader(const std::string & key, const std::string & value)
+{
+	Header.insert(std::pair<std::string, std::string>(key, value));
+}
+inline void WebClient::RemoveHeader(const std::string & key)
+{
+	Header.erase(key);
 };

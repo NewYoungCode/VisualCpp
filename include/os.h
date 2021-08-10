@@ -8,7 +8,7 @@
 #include <sstream>
 #include <mutex>
 #include <memory>
-
+#include <map>
 #include <io.h>
 #include <Windows.h>
 #include <winuser.h>

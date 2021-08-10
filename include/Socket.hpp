@@ -132,18 +132,14 @@ inline Socket Socket::Accep() const {
 		{
 			continue;
 		}
-		Socket s(clientSocket);
-		s.Port = ClientAddr.sin_port;
-		s.Address.clear();
-		s.Address.append(std::to_string((size_t)ClientAddr.sin_addr.S_un.S_un_b.s_b1));
-		s.Address.push_back('.');
-		s.Address.append(std::to_string((size_t)ClientAddr.sin_addr.S_un.S_un_b.s_b2));
-		s.Address.push_back('.');
-		s.Address.append(std::to_string((size_t)ClientAddr.sin_addr.S_un.S_un_b.s_b3));
-		s.Address.push_back('.');
-		s.Address.append(std::to_string((size_t)ClientAddr.sin_addr.S_un.S_un_b.s_b4));
-		s.WorkType = WorkType;
-		return s;
+		Socket skt(clientSocket);
+		skt.Port = ClientAddr.sin_port;
+		skt.WorkType = WorkType;
+		char* c_address = new char[15]{ 0 };
+		sprintf_s(c_address, 14, "%d.%d.%d.%d", ClientAddr.sin_addr.S_un.S_un_b.s_b1, ClientAddr.sin_addr.S_un.S_un_b.s_b2, ClientAddr.sin_addr.S_un.S_un_b.s_b3, ClientAddr.sin_addr.S_un.S_un_b.s_b4);
+		skt.Address = c_address;
+		delete[] c_address;
+		return Socket(skt);
 	}
 	return NULL;
 }
