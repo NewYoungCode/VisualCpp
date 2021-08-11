@@ -162,14 +162,14 @@ namespace WinTool {
 		std::string appName = Path::GetFileNameWithoutExtension(bootstart);
 		bool bResult = false;
 		HKEY subKey;
-		if (ERROR_SUCCESS != RegOpenKeyExA(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows\\CurrentVersion\\Run\\", NULL, KEY_ALL_ACCESS, &subKey))
+		if (ERROR_SUCCESS != RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("Software\\Microsoft\\Windows\\CurrentVersion\\Run\\"), NULL, KEY_ALL_ACCESS, &subKey))
 		{
 			return bResult;
 		}
 		//3、判断注册表项是否已经存在
-		char strDir[MAX_PATH] = {};
+		char strDir[MAX_PATH]{0};
 		DWORD nLength = MAX_PATH;
-		LSTATUS status = RegGetValueA(subKey, NULL, appName.c_str(), REG_SZ, NULL, strDir, &nLength);
+		LSTATUS status = RegGetValue(subKey, NULL, AUTOTEXT(appName), REG_SZ, NULL, strDir, &nLength);
 		if (status != ERROR_SUCCESS) {
 			if (bootstart == strDir) {
 				bResult = true;

@@ -163,7 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Base64.hpp" />
-    <ClInclude Include="include\Common.hpp" />
+    <ClInclude Include="include\Func.hpp" />
     <ClInclude Include="include\ConfigIni.hpp" />
     <ClInclude Include="include\ConfigJson.hpp" />
     <ClInclude Include="include\FileSystem.hpp" />

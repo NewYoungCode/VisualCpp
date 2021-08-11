@@ -9,7 +9,7 @@
 #include "WinTool.hpp"
 #include "ConfigIni.hpp"
 #include "WebClient.hpp"
-
+#include "Func.hpp"
 
 //void  test(curl_off_t total, curl_off_t now, float rate) {
 //	printf("%g \n", rate);
@@ -17,6 +17,21 @@
 //}
 
 int main(int count, char*args[]) {
+
+
+	size_t aaaaa;
+
+	Func<int, int, int> funcs;
+	//绑定事件
+	auto eventid= funcs += [=](int a,int b)->int {
+		printf("%d\n",a+b);
+		return a + b;
+	};
+	//执行绑定的事件
+	funcs(100, 200);
+	//移除某个事件
+	funcs -= eventid;
+
 	//for (;;) {
 	//	WebClient wc;
 	//	wc.AddHeader("User-Agent", "不知名浏览器");
@@ -27,9 +42,15 @@ int main(int count, char*args[]) {
 	//	break;
 	//}
 
+	AUTOTEXT("");
+
 	//WebClient wc;
 	//auto code = wc.DownloadFile("https://www.nyzhishan.com/static_2021/d/2.7.6/fotiaoqiang-2.7.6-1-Setup.exe", Path::StartPath() + "\\aa.exe", test);
 	//return 0;
+
+
+	//std::vector<int> lll;
+	//lll.
 
 	WinTool::SetAutoBoot();
 	WinTool::SetAutoBoot(Path::StartFileName(),false);

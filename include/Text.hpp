@@ -28,6 +28,7 @@ namespace Text {
 	std::vector<std::string> Split(const std::string& str, const std::string& ch);
 
 #define AUTOTEXT(str) const_cast<LPTSTR>(Text::Auto(str).c_str())
+
 	inline auto Auto(const std::string&str) {
 #ifdef UNICODE
 		return ANSIToUniCode(str);

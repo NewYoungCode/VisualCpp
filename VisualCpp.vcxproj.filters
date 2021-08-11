@@ -27,9 +27,6 @@
     <ClInclude Include="include\Base64.hpp">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="include\Common.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="include\ConfigJson.hpp">
       <Filter>include</Filter>
     </ClInclude>
@@ -79,6 +76,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\ConfigIni.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Func.hpp">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
