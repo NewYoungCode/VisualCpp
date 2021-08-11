@@ -2,7 +2,6 @@
 #include <sstream>
 #include <fstream>
 #include "json.hpp"
-#include <Common.hpp>
 class  ConfigJson
 {
 private:

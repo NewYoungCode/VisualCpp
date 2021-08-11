@@ -1,8 +1,4 @@
 #pragma once
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <functional>
 #ifndef CURL_STATICLIB
 #define CURL_STATICLIB
 #endif // !CURL_STATICLIB
