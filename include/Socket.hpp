@@ -5,16 +5,17 @@
 #else
 #endif
 static WSADATA __wsadata__;
-typedef enum :short {
-	TCP,
-	UDP
-}NetWorkType;
+
 class Socket
 {
 private:
 	sockaddr_in sockaddr;
 	SOCKET socket = NULL;
 public:
+	typedef enum :short {
+		TCP,
+		UDP
+	}NetWorkType;
 	//³õÊ¼»¯Ì×½Ó×Ö¿â
 	static bool Init() {
 		if (__wsadata__.wVersion == 0) {

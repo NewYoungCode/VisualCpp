@@ -19,6 +19,9 @@
 int main(int count, char*args[]) {
 
 
+
+	Socket *aaaaaa=new Socket(Socket::TCP);
+
 	size_t aaaaa;
 
 	Func<int, int, int> funcs;
