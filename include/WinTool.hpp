@@ -6,7 +6,7 @@
 #include <psapi.h>
 namespace WinTool {
 	typedef struct {
-		unsigned long process_id;
+		unsigned long processId;
 		HWND best_handle;
 	}handle_data;
 	//给进程提权
@@ -14,33 +14,38 @@ namespace WinTool {
 	//创建桌面快捷方式
 	bool CreateDesktopLnk(const std::string &pragmaFilename, const std::string &LnkName = "", const std::string& cmdline = "", const std::string& iconFilename = "");
 	//设置程序自启动
-	bool SetAutoBoot(const std::string& filename, bool enable = true);
+	bool SetAutoBoot(const std::string& filename="", bool enable = true);
 	//获取程序自启动状态
 	bool GetAutoBootStatus(const std::string& filename);
 	BOOL IsMainWindow(HWND handle);
 	BOOL CALLBACK EnumWindowsCallback(HWND handle, LPARAM lParam);
-	HWND FindMainWindow(DWORD process_id);
+	HWND FindMainWindow(DWORD processId);
 	BOOL CALLBACK EnumWindowsCallback(HWND handle, LPARAM lParam);
 	//获取进程信息
 	std::vector<PROCESSENTRY32> FindProcessInfo(const std::string& _proccname);
+	//根据进程名称打开进程
+	HANDLE OpenProcess(const std::string& _proccname);
 	//获取进程ID集合
 	std::vector<DWORD> FindProcessId(const std::string& proccname);
 	//获取进程文件路径
-	std::string FindProcessFilename(DWORD pid);
+	std::string FindProcessFilename(DWORD processId);
 	//关闭所有进程
-	int CloseProcess(const std::vector<DWORD>& pids);
+	int CloseProcess(const std::vector<DWORD>& processIds);
 	//使用进程ID关闭进程
-	bool CloseProcess(DWORD pid);
+	bool CloseProcess(DWORD processId);
+	//获取进程是不是64位的
+	bool Is64BitPorcess(DWORD processId);
+	bool Is86BitPorcess(DWORD processId);
 }
 namespace WinTool {
 	inline BOOL IsMainWindow(HWND handle)
 	{
 		return GetWindow(handle, GW_OWNER) == (HWND)0 && IsWindowVisible(handle);
 	}
-	inline HWND FindMainWindow(DWORD process_id)
+	inline HWND FindMainWindow(DWORD processId)
 	{
 		handle_data data;
-		data.process_id = process_id;
+		data.processId = processId;
 		data.best_handle = 0;
 		EnumWindows(EnumWindowsCallback, (LPARAM)&data);
 		return data.best_handle;
@@ -48,9 +53,9 @@ namespace WinTool {
 	inline BOOL CALLBACK EnumWindowsCallback(HWND handle, LPARAM lParam)
 	{
 		handle_data& data = *(handle_data*)lParam;
-		unsigned long process_id = 0;
-		GetWindowThreadProcessId(handle, &process_id);
-		if (data.process_id != process_id || !IsMainWindow(handle)) {
+		unsigned long processId = 0;
+		::GetWindowThreadProcessId(handle, &processId);
+		if (data.processId != processId || !IsMainWindow(handle)) {
 			return TRUE;
 		}
 		data.best_handle = handle;
@@ -59,53 +64,91 @@ namespace WinTool {
 	inline std::vector<PROCESSENTRY32> FindProcessInfo(const std::string& _proccname) {
 
 		std::vector<PROCESSENTRY32> infos;
-		HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+		HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 
 		PROCESSENTRY32 pe;
 		pe.dwSize = sizeof(PROCESSENTRY32);
-		for (auto status = Process32First(hSnapshot, &pe); status != FALSE; status = Process32Next(hSnapshot, &pe)) {
+		for (auto status = ::Process32First(hSnapshot, &pe); status != FALSE; status = ::Process32Next(hSnapshot, &pe)) {
 			pe.dwSize = sizeof(PROCESSENTRY32);
 #ifdef UNICODE
 			std::string item = Text::UnicodeToANSI(pe.szExeFile);
 #else
 			std::string item = pe.szExeFile;
 #endif
-			if (item == _proccname) {
+			//不传进程名称查询所有
+			if (_proccname.empty()) {
 				infos.push_back(pe);
 			}
-			//printf("%s %d\n", item.data(),pe.th32ProcessID);
+			else {
+				if (item == _proccname) {
+				}
+			}
+			//printf("%s %d\n", item.data(),pe.th32processId);
 		}
 		CloseHandle(hSnapshot);
 		return infos;
 	}
 	inline std::vector<DWORD> FindProcessId(const std::string& _proccname)
 	{
-		std::vector<DWORD> pids;
+		std::vector<DWORD> processIds;
 		auto list = FindProcessInfo(_proccname);
 		for (auto &it : list) {
-			pids.push_back(it.th32ProcessID);
+			processIds.push_back(it.th32ProcessID);
 		}
-		return pids;
+		return processIds;
 	}
-	inline std::string FindProcessFilename(DWORD pid)
+
+	inline HANDLE OpenProcess(const std::string& _proccname) {
+		std::vector<DWORD> processIds;
+		auto list = FindProcessInfo(_proccname);
+		if (list.size() > 0) {
+			HANDLE hProcess = ::OpenProcess(PROCESS_ALL_ACCESS, FALSE, list.at(0).th32ProcessID);
+			return hProcess;
+		}
+		return NULL;
+	}
+
+	inline 	bool Is86BitPorcess(DWORD processId) {
+	
+		return !Is64BitPorcess(processId);
+	}
+
+	inline 	bool Is64BitPorcess(DWORD processId)
+	{
+		BOOL bIsWow64 = FALSE;
+		HANDLE hProcess = ::OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, processId);
+		if (hProcess)
+		{
+			typedef BOOL(WINAPI *LPFN_ISWOW64PROCESS) (HANDLE, PBOOL);
+			LPFN_ISWOW64PROCESS fnIsWow64Process = (LPFN_ISWOW64PROCESS)GetProcAddress(GetModuleHandle(AUTOTEXT("kernel32")), "IsWow64Process");
+			if (NULL != fnIsWow64Process)
+			{
+				fnIsWow64Process(hProcess, &bIsWow64);
+			}
+		}
+		CloseHandle(hProcess);
+		return !bIsWow64;
+	}
+
+	inline std::string FindProcessFilename(DWORD processId)
 	{
 		char buf[MAX_PATH]{ 0 };
-		HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pid);
+		HANDLE hProcess = ::OpenProcess(PROCESS_ALL_ACCESS, FALSE, processId);
 		DWORD result = ::GetModuleFileNameExA(hProcess, NULL, buf, sizeof(buf) - 1);
 		CloseHandle(hProcess);
 		return buf;
 	}
-	inline int CloseProcess(const std::vector<DWORD>& pids) {
+	inline int CloseProcess(const std::vector<DWORD>& processIds) {
 		size_t count = 0;
-		for (auto item : pids) {
+		for (auto item : processIds) {
 			count += CloseProcess(item);
 		}
 		return count;
 	}
-	inline bool CloseProcess(DWORD unProcessID)
+	inline bool CloseProcess(DWORD processId)
 	{
-		HANDLE bExitCode = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_OPERATION | PROCESS_VM_WRITE
-			| PROCESS_ALL_ACCESS, FALSE, unProcessID);
+		HANDLE bExitCode = ::OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_OPERATION | PROCESS_VM_WRITE
+			| PROCESS_ALL_ACCESS, FALSE, processId);
 		if (bExitCode)
 		{
 			BOOL bFlag = ::TerminateProcess(bExitCode, 0);
@@ -119,14 +162,7 @@ namespace WinTool {
 		std::string appName = Path::GetFileNameWithoutExtension(bootstart);
 		bool bResult = false;
 		HKEY subKey;
-		REGSAM dwFlag = KEY_ALL_ACCESS;
-		BOOL is64Bit = FALSE;
-		::IsWow64Process(::GetCurrentProcess(), &is64Bit);
-		if (is64Bit)
-		{
-			dwFlag |= KEY_WOW64_64KEY;
-		}
-		if (ERROR_SUCCESS != RegOpenKeyExA(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows\\CurrentVersion\\Run\\", NULL, dwFlag, &subKey))
+		if (ERROR_SUCCESS != RegOpenKeyExA(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows\\CurrentVersion\\Run\\", NULL, KEY_ALL_ACCESS, &subKey))
 		{
 			return bResult;
 		}
@@ -155,28 +191,21 @@ namespace WinTool {
 		std::string appName = Path::GetFileNameWithoutExtension(bootstart);
 		bool bResult = false;
 		HKEY subKey;
-		REGSAM dwFlag = KEY_ALL_ACCESS;
-		BOOL is64Bit = FALSE;
-		::IsWow64Process(::GetCurrentProcess(), &is64Bit);
-		if (is64Bit)
-		{
-			dwFlag |= KEY_WOW64_64KEY;
-		}
-		if (ERROR_SUCCESS != RegOpenKeyExA(HKEY_LOCAL_MACHINE, "Software\\Microsoft\\Windows\\CurrentVersion\\Run\\", NULL, dwFlag, &subKey))
+		if (ERROR_SUCCESS != RegOpenKeyEx(HKEY_LOCAL_MACHINE, TEXT("Software\\Microsoft\\Windows\\CurrentVersion\\Run\\"), NULL, KEY_ALL_ACCESS, &subKey))
 		{
 			return bResult;
 		}
 		if (bStatus)
 		{
 
-			if (ERROR_SUCCESS == ::RegSetValueExA(subKey, appName.c_str(), NULL, REG_SZ, (PBYTE)bootstart.c_str(), bootstart.size()))
+			if (ERROR_SUCCESS == ::RegSetValueEx(subKey, AUTOTEXT(appName), NULL, REG_SZ, (PBYTE)bootstart.c_str(), bootstart.size()))
 			{
 				bResult = true;
 			}
 		}
 		else
 		{
-			if (ERROR_SUCCESS == ::RegDeleteValueA(subKey, appName.c_str()))
+			if (ERROR_SUCCESS == ::RegDeleteValue(subKey, AUTOTEXT(appName)))
 			{
 				bResult = true;
 			}

@@ -11,33 +11,35 @@
 #include "WebClient.hpp"
 
 
-void  test(curl_off_t total, curl_off_t now, float rate) {
-	printf("%g \n", rate);
-	return;
-}
+//void  test(curl_off_t total, curl_off_t now, float rate) {
+//	printf("%g \n", rate);
+//	return;
+//}
 
 int main(int count, char*args[]) {
+	//for (;;) {
+	//	WebClient wc;
+	//	wc.AddHeader("User-Agent", "不知名浏览器");
+	//	wc.AddHeader("User-Agentx", "xxx");
+	//	wc.RemoveHeader("User-Agentxx");
+	//	std::string str;
+	//	auto code = wc.HttpGet("http://127.0.0.1/test", str);
+	//	break;
+	//}
 
+	//WebClient wc;
+	//auto code = wc.DownloadFile("https://www.nyzhishan.com/static_2021/d/2.7.6/fotiaoqiang-2.7.6-1-Setup.exe", Path::StartPath() + "\\aa.exe", test);
+	//return 0;
 
+	WinTool::SetAutoBoot();
+	WinTool::SetAutoBoot(Path::StartFileName(),false);
 
-
-	char bffff[]{0xe9 };
-
-	for (;;) {
-		WebClient wc;
-		wc.AddHeader("User-Agent", "不知名浏览器");
-		wc.AddHeader("User-Agentx", "xxx");
-		wc.RemoveHeader("User-Agentxx");
-		std::string str;
-		auto code = wc.HttpGet("http://127.0.0.1/test", str);
-		break;
+	for (auto &it : WinTool::FindProcessInfo("")) {
+		if (!WinTool::Is64BitPorcess(it.th32ProcessID)) {
+			printf("%s\n",it.szExeFile);
+		}
 	}
-
-	WebClient wc;
-	auto code = wc.DownloadFile("https://www.nyzhishan.com/static_2021/d/2.7.6/fotiaoqiang-2.7.6-1-Setup.exe", Path::StartPath() + "\\aa.exe", test);
-	return 0;
-
-	ConfigIni ini(Path::StartPath() + "\\test.ini", "settint");
+	/*ConfigIni ini(Path::StartPath() + "\\test.ini", "settint");
 	ini.WriteValue("name", "666");
 	auto xx = ini.ReadString("name");
 
@@ -50,6 +52,6 @@ int main(int count, char*args[]) {
 	{
 		WinTool::SetAutoBoot(b);
 		WinTool::SetAutoBoot(b, false);
-	}
+	}*/
 	return 0;
 }
