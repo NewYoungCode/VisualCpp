@@ -27,6 +27,8 @@ int main(int count, char*args[]) {
 	Socket *aaaaaa=new Socket(Socket::TCP);
 	size_t aaaaa;
 
+	std::function<void()> clickEvent = NULL;
+
 	Func<int, int, int> funcs;
 	//绑定事件
 	auto eventid= funcs += [=](int a,int b)->int {
@@ -53,11 +55,7 @@ int main(int count, char*args[]) {
 	//WebClient wc;
 	//auto code = wc.DownloadFile("https://www.nyzhishan.com/static_2021/d/2.7.6/fotiaoqiang-2.7.6-1-Setup.exe", Path::StartPath() + "\\aa.exe", test);
 	//return 0;
-
-
 	//std::vector<int> lll;
-	//lll.
-
 	WinTool::SetAutoBoot();
 	WinTool::SetAutoBoot(Path::StartFileName(),false);
 
