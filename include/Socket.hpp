@@ -137,7 +137,7 @@ inline Socket Socket::Accep() const {
 		skt.Port = ClientAddr.sin_port;
 		skt.WorkType = WorkType;
 		char* c_address = new char[15]{ 0 };
-		sprintf_s(c_address, 14, "%d.%d.%d.%d", ClientAddr.sin_addr.S_un.S_un_b.s_b1, ClientAddr.sin_addr.S_un.S_un_b.s_b2, ClientAddr.sin_addr.S_un.S_un_b.s_b3, ClientAddr.sin_addr.S_un.S_un_b.s_b4);
+		sprintf_s(c_address, sizeof(c_address), "%d.%d.%d.%d", ClientAddr.sin_addr.S_un.S_un_b.s_b1, ClientAddr.sin_addr.S_un.S_un_b.s_b2, ClientAddr.sin_addr.S_un.S_un_b.s_b3, ClientAddr.sin_addr.S_un.S_un_b.s_b4);
 		skt.Address = c_address;
 		delete[] c_address;
 		return Socket(skt);

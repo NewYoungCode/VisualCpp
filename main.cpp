@@ -11,17 +11,20 @@
 #include "WebClient.hpp"
 #include "Func.hpp"
 
-//void  test(curl_off_t total, curl_off_t now, float rate) {
-//	printf("%g \n", rate);
-//	return;
-//}
+void  test(int total, int now) {
+	printf("%d %d\n", total,now);
+	return;
+}
+
+
+struct st {
+	char buf[6]{0};
+	char a = 255;
+};
 
 int main(int count, char*args[]) {
 
-
-
 	Socket *aaaaaa=new Socket(Socket::TCP);
-
 	size_t aaaaa;
 
 	Func<int, int, int> funcs;

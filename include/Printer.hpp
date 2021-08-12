@@ -72,7 +72,7 @@ namespace Printer {
 			}
 			SetStretchBltMode(hDC, HALFTONE);
 			int dc_page_width = ((double)GetDeviceCaps(hDC, HORZSIZE) * (double)GetDeviceCaps(hDC, LOGPIXELSX)) / 25.4;
-			//宾川县的 医院是这样的 高度 要减少 20mm
+			//16K规格纸张 高度 要减少 20mm
 			int dc_page_height = ((double)(GetDeviceCaps(hDC, VERTSIZE)) * ((double)GetDeviceCaps(hDC, LOGPIXELSY))) / 25.4;
 			DOCINFO docInfo = { sizeof(DOCINFO) };
 			//document name
