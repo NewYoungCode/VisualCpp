@@ -22,7 +22,25 @@ struct st {
 	char a = 255;
 };
 
+
+struct base {
+	int a = 100;
+};
+
+struct son :public base {
+	size_t b = 200;
+};
+
+
+
+
 int main(int count, char*args[]) {
+
+	int aaaa = 666;
+	int intSzie = sizeof(int);
+	int stringSzie = sizeof(std::string);
+	std::string *bbbb = (std::string*)(void*)&aaaa;
+
 
 	Socket *aaaaaa=new Socket(Socket::TCP);
 	size_t aaaaa;

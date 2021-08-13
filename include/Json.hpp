@@ -6,3 +6,9 @@
 #else
 #pragma comment (lib,"json_lib.lib")
 #endif
+namespace Json {
+	inline bool parse(const std::string&jsonStr, Json::Value&outValue) {
+		Json::Reader rd;
+		return rd.parse(jsonStr, outValue);
+	}
+};

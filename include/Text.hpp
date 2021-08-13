@@ -27,6 +27,9 @@ namespace Text {
 	//×Ö·û´®·Ö¸î
 	std::vector<std::string> Split(const std::string& str, const std::string& ch);
 
+	template<typename ...T>
+	void Format(LPTSTR buf, size_t strCount, LPCTSTR formatStr, T...args);
+
 #define AUTOTEXT(str) const_cast<LPTSTR>(Text::Auto(str).c_str())
 
 	inline auto Auto(const std::string&str) {
@@ -48,6 +51,17 @@ namespace Text {
 
 //¶¨Òå................................................
 namespace Text {
+
+	template<typename ...T>
+	inline	void Format(LPTSTR buf, size_t strCount, LPCTSTR formatStr, T ...args)
+	{
+#ifdef UNICODE
+		swprintf_s((buf), strCount, formatStr, std::forward<T>(args)...);
+#else
+		sprintf_s((buf), strCount, formatStr, std::forward<T>(args)...);
+#endif
+	}
+
 	inline void Trim(std::string &str) {
 		size_t pos = str.find(" ");
 		if (pos == std::string::npos) return;
