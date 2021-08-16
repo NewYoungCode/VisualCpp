@@ -12,13 +12,13 @@
 #include "Func.hpp"
 
 void  test(int total, int now) {
-	printf("%d %d\n", total,now);
+	printf("%d %d\n", total, now);
 	return;
 }
 
 
 struct st {
-	char buf[6]{0};
+	char buf[6]{ 0 };
 	char a = 255;
 };
 
@@ -32,9 +32,22 @@ struct son :public base {
 };
 
 
+enum testEnum :char {
+	A,
+	B,
+	C,
+	D
+};
+
+void testFunc(testEnum em) {
+
+
+}
 
 
 int main(int count, char*args[]) {
+
+	
 
 	int aaaa = 666;
 	int intSzie = sizeof(int);
@@ -42,15 +55,15 @@ int main(int count, char*args[]) {
 	std::string *bbbb = (std::string*)(void*)&aaaa;
 
 
-	Socket *aaaaaa=new Socket(Socket::TCP);
+	Socket *aaaaaa = new Socket(Socket::TCP);
 	size_t aaaaa;
 
 	std::function<void()> clickEvent = NULL;
 
 	Func<int, int, int> funcs;
 	//绑定事件
-	auto eventid= funcs += [=](int a,int b)->int {
-		printf("%d\n",a+b);
+	auto eventid = funcs += [=](int a, int b)->int {
+		printf("%d\n", a + b);
 		return a + b;
 	};
 	//执行绑定的事件
@@ -75,11 +88,11 @@ int main(int count, char*args[]) {
 	//return 0;
 	//std::vector<int> lll;
 	WinTool::SetAutoBoot();
-	WinTool::SetAutoBoot(Path::StartFileName(),false);
+	WinTool::SetAutoBoot(Path::StartFileName(), false);
 
 	for (auto &it : WinTool::FindProcessInfo("")) {
 		if (!WinTool::Is64BitPorcess(it.th32ProcessID)) {
-			printf("%s\n",it.szExeFile);
+			printf("%s\n", it.szExeFile);
 		}
 	}
 	/*ConfigIni ini(Path::StartPath() + "\\test.ini", "settint");
