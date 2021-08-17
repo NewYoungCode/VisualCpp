@@ -64,10 +64,11 @@ namespace Form {
 		}
 	};
 }
-//curl_global_init(CURL_GLOBAL_ALL);初始化curl
+
 class WebClient
 {
 private:
+	static bool bInit;//curl的初始化
 	CURL*  Init(const std::string &url, std::string& resp, int timeOut);
 	long CleanUp(CURL* curl, CURLcode code);
 	std::map<std::string, std::string> Header;
@@ -79,7 +80,6 @@ public:
 	Proxy *Proxy = NULL;
 	void AddHeader(const std::string&key, const std::string&value);
 	void RemoveHeader(const std::string&key);
-
 	int DownloadFile(const std::string & strUrl, const std::string & filename, const ProgressFunc&progressCallback = NULL, int nTimeout = 20);
 	int HttpGet(const std::string & strUrl, std::string & strResponse, int nTimeout = 20);
 	int HttpPost(const std::string & strUrl, const std::string & data, std::string & respone, int nTimeout = 20);
@@ -87,14 +87,20 @@ public:
 	int UploadFile(const std::string &strUrl, const std::string &filename, const std::string &field, std::string &respone, const ProgressFunc&progressCallback = NULL, int nTimeout = 30);
 	int FtpDownLoad(const std::string& strUrl, const std::string&user, const std::string&pwd, const std::string &outFileName, int nTimeout = 30);
 };
-inline WebClient::WebClient() {}
+
+//定义
+bool WebClient::bInit = false;
+inline WebClient::WebClient() {
+	if (!bInit) {
+		curl_global_init(CURL_GLOBAL_ALL); //初始化curl
+		bInit = true;
+	}
+}
 inline WebClient::~WebClient() {
 	if (this->Proxy) {
 		delete this->Proxy;
 	}
 }
-
-//定义
 inline size_t g_curl_receive_callback(char *contents, size_t size, size_t nmemb, void *respone) {
 	size_t count = size * nmemb;
 	std::string *str = (std::string*)respone;
@@ -116,7 +122,6 @@ inline int g_curl_progress_callback(void *ptr, curl_off_t dltotal, curl_off_t dl
 	}
 	return 0;
 }
-
 inline CURL* WebClient::Init(const std::string &strUrl, std::string& strResponse, int nTimeout) {
 	CURL* curl = curl_easy_init();
 	if (!curl) {

@@ -4,11 +4,11 @@
 #pragma comment(lib,"ws2_32.lib")
 #else
 #endif
-static WSADATA __wsadata__;
 
 class Socket
 {
 private:
+	static WSADATA wsadata;
 	sockaddr_in sockaddr;
 	SOCKET socket = NULL;
 public:
@@ -18,11 +18,11 @@ public:
 	}NetWorkType;
 	//初始化套接字库
 	static bool Init() {
-		if (__wsadata__.wVersion == 0) {
-			int code = !WSAStartup(MAKEWORD(2, 2), &__wsadata__);
+		if (wsadata.wVersion == 0) {
+			int code = !WSAStartup(MAKEWORD(2, 2), &wsadata);
 			return code;
 		}
-		else if (__wsadata__.wVersion != 0) {
+		else if (wsadata.wVersion != 0) {
 			return true;
 		}
 		return false;
@@ -30,7 +30,7 @@ public:
 	//清理
 	static void Cleanup() {
 		::WSACleanup();
-		__wsadata__.wVersion = 0;
+		wsadata.wVersion = 0;
 	}
 	static std::vector<std::string> GetIpByName(const std::string&hostname) {
 		Init();
@@ -62,6 +62,7 @@ public:
 	Socket(SOCKET socket);
 	virtual ~Socket();
 };
+WSADATA Socket::wsadata = {};
 inline int Socket::Receive(char* outBuf, size_t recvLen, int flags) const
 {
 	return ::recv(socket, outBuf, recvLen, 0);
@@ -128,7 +129,7 @@ inline Socket Socket::Accep() const {
 	for (;;) {
 		sockaddr_in  ClientAddr;
 		int  AddrLen = sizeof(ClientAddr);
-		SOCKET clientSocket = accept(socket, (LPSOCKADDR)&ClientAddr, &AddrLen);
+		SOCKET clientSocket = ::accept(socket, (LPSOCKADDR)&ClientAddr, &AddrLen);
 		if (clientSocket == INVALID_SOCKET)
 		{
 			continue;
