@@ -17,4 +17,4 @@
 #include "Text.hpp" //处理文字
 #include "FileSystem.hpp"//处理文件
 #include "Time.hpp" //处理时间
-#include "WinTool.hpp"
+#include "WinTool.hpp" //win32常用函数

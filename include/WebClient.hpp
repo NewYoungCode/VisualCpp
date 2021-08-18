@@ -20,6 +20,8 @@ extern size_t g_curl_download_callback(char *contents, size_t size, size_t nmemb
 extern int g_curl_progress_callback(void *ptr, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow);
 //下载进度回调函数模型
 typedef std::function<void(curl_off_t total, curl_off_t now, float rate)> ProgressFunc;
+//curl的初始化
+static bool g_curl_bInit = false;
 
 class Proxy {
 public:
@@ -68,7 +70,6 @@ namespace Form {
 class WebClient
 {
 private:
-	static bool bInit;//curl的初始化
 	CURL*  Init(const std::string &url, std::string& resp, int timeOut);
 	long CleanUp(CURL* curl, CURLcode code);
 	std::map<std::string, std::string> Header;
@@ -89,11 +90,11 @@ public:
 };
 
 //定义
-bool WebClient::bInit = false;
+//bool WebClient::g_curl_bInit = false;
 inline WebClient::WebClient() {
-	if (!bInit) {
+	if (!g_curl_bInit) {
 		curl_global_init(CURL_GLOBAL_ALL); //初始化curl
-		bInit = true;
+		g_curl_bInit = true;
 	}
 }
 inline WebClient::~WebClient() {

@@ -12,7 +12,7 @@ namespace Gdiplus {
 		Bmp,
 		Png
 	}ImageFormat;
-	extern ULONG_PTR gdiplusToken;
+	static ULONG_PTR gdiplusToken;
 	void Init();
 	void CleanUp();
 	bool CutBitmap(Gdiplus::Bitmap & bitmap, const Gdiplus::Rect  & rect, Gdiplus::Bitmap  & outBitmap);
@@ -23,7 +23,6 @@ namespace Gdiplus {
 }
 
 namespace Gdiplus {
-	ULONG_PTR gdiplusToken= NULL;
 	inline void Init() {
 		if (gdiplusToken == NULL) {
 			Gdiplus::GdiplusStartupInput gdiplusStartupInput;
