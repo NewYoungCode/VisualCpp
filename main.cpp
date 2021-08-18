@@ -47,25 +47,20 @@ void testFunc(testEnum em) {
 
 int main(int count, char*args[]) {
 
-	
-
 	int aaaa = 666;
 	int intSzie = sizeof(int);
 	int stringSzie = sizeof(std::string);
 	std::string *bbbb = (std::string*)(void*)&aaaa;
-
-
 	Socket *aaaaaa = new Socket(Socket::TCP);
 	size_t aaaaa;
-
 	std::function<void()> clickEvent = NULL;
-
 	Func<int, int, int> funcs;
 	//绑定事件
 	auto eventid = funcs += [=](int a, int b)->int {
 		printf("%d\n", a + b);
 		return a + b;
 	};
+
 	//执行绑定的事件
 	funcs(100, 200);
 	//移除某个事件
@@ -98,7 +93,6 @@ int main(int count, char*args[]) {
 	/*ConfigIni ini(Path::StartPath() + "\\test.ini", "settint");
 	ini.WriteValue("name", "666");
 	auto xx = ini.ReadString("name");
-
 	auto a = WinTool::FindProcessId("WeChatApp.exe").at(0);
 	auto b = WinTool::FindProcessFilename(a);
 	WinTool::EnablePrivilege();
