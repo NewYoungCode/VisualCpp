@@ -22,6 +22,9 @@
     <Filter Include="dll">
       <UniqueIdentifier>{7fc05417-9e1e-4513-aecb-ef9bfcbdc420}</UniqueIdentifier>
     </Filter>
+    <Filter Include="txt">
+      <UniqueIdentifier>{5f11eb8e-a387-4b9f-99d2-1e1bb2145247}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Base64.hpp">
@@ -123,5 +126,10 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="txt\笔记.txt">
+      <Filter>txt</Filter>
+    </Text>
   </ItemGroup>
 </Project>
