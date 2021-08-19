@@ -181,6 +181,7 @@
     <ClInclude Include="include\Time.hpp" />
     <ClInclude Include="include\WebClient.hpp" />
     <ClInclude Include="include\WinTool.hpp" />
+    <ClInclude Include="TString.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\json_lib.lib" />

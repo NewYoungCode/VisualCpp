@@ -11,41 +11,14 @@
 #include "WebClient.hpp"
 #include "Func.hpp"
 
-void  test(int total, int now) {
-	printf("%d %d\n", total, now);
-	return;
-}
-
-
-struct st {
-	char buf[6]{ 0 };
-	char a = 255;
-};
-
-
-struct base {
-	int a = 100;
-};
-
-struct son :public base {
-	size_t b = 200;
-};
-
-
-enum testEnum :char {
-	A,
-	B,
-	C,
-	D
-};
-
-void testFunc(testEnum em) {
-
-
-}
-
+#include "TString.hpp"
 
 int main(int count, char*args[]) {
+
+	TString sss = "666";
+	sss.append("哈哈哈");
+	sss.append("金泰没");
+
 
 	int aaaa = 666;
 	int intSzie = sizeof(int);
@@ -60,12 +33,10 @@ int main(int count, char*args[]) {
 		printf("%d\n", a + b);
 		return a + b;
 	};
-
 	//执行绑定的事件
 	funcs(100, 200);
 	//移除某个事件
 	funcs -= eventid;
-
 	//for (;;) {
 	//	WebClient wc;
 	//	wc.AddHeader("User-Agent", "不知名浏览器");

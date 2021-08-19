@@ -84,6 +84,9 @@
     <ClInclude Include="include\Func.hpp">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="TString.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\json_lib.lib">
