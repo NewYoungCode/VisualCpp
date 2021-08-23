@@ -1,5 +1,7 @@
 #pragma once
 namespace Text {
+	//寻找字符串里面字符个数
+	size_t FindCount(const std::string&str, const std::string&ch_);
 	//去除前后空格
 	void Trim(std::string &str);
 	//包含大写的字母转小写
@@ -51,6 +53,18 @@ namespace Text {
 
 //定义................................................
 namespace Text {
+
+	inline size_t FindCount(const std::string&str, const std::string&ch_) {
+		size_t pos = str.find(ch_);
+		size_t count = 1;
+		if (pos == std::string::npos) {
+			return 0;
+	}
+		while ((pos = str.find(ch_, pos + ch_.size())) != std::string::npos) {
+			count++;
+		}
+		return count;
+}
 
 	template<typename ...T>
 	inline	void Format(LPTSTR buf, size_t strCount, LPCTSTR formatStr, T ...args)
