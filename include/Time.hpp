@@ -1,6 +1,26 @@
 #pragma once
+#pragma warning(disable:4996)
 #include <time.h>
 namespace Time {
+	inline std::string ToString(time_t time_) {
+		char timeStr[64]{ 0 };
+		struct tm *ttime;
+		ttime = ::localtime(&time_);
+		strftime(timeStr, 64, "%Y-%m-%d %H:%M:%S", ttime);
+		return std::string(timeStr);
+	}
+	inline time_t FileTimeToTime(const FILETIME &ft) {
+		time_t t;
+		LONGLONG  ll;
+		ULARGE_INTEGER            ui;
+		ui.LowPart = ft.dwLowDateTime;
+		ui.HighPart = ft.dwHighDateTime;
+		ll = ft.dwHighDateTime << 32 + ft.dwLowDateTime;  //这一步是不是多余的
+		t = ((LONGLONG)(ui.QuadPart - 116444736000000000) / 10000000);
+		//将ui.QuadPart的数据类型ULONGLONG强制转换为time_t的LONGLONG数据类型
+		return t;
+	}
+
 	namespace Now {
 		inline  std::string ToString(const std::string &format = "yyyy-MM-dd hh:mm:ss") {
 			SYSTEMTIME time;

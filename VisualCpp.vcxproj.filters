@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="include">
-      <UniqueIdentifier>{fe8a4ab6-10f0-45c3-bd98-0d71b7d67416}</UniqueIdentifier>
-    </Filter>
     <Filter Include="lib">
       <UniqueIdentifier>{dcf75f97-55a6-4dc8-ac14-f1c2a169eee3}</UniqueIdentifier>
     </Filter>
@@ -28,64 +25,67 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Base64.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ConfigJson.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\FileSystem.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\GdiPlus.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\HttpUtility.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Json.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Md5.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MySqlClient.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\OrcaleClient.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\os.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Printer.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Socket.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Text.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Time.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\WebClient.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\WinTool.hpp">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ThreadPool.hpp">
-      <Filter>include</Filter>
+      <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="include\ConfigIni.hpp">
-      <Filter>include</Filter>
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ConfigJson.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FileSystem.hpp">
+      <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="include\Func.hpp">
-      <Filter>include</Filter>
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GdiPlus.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\HttpUtility.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Json.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Md5.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MySqlClient.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OrcaleClient.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\os.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Printer.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Regedit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Socket.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Text.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ThreadPool.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Time.hpp">
+      <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="TString.hpp">
-      <Filter>include</Filter>
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\WinTool.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\WebClient.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +127,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="WebClient.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

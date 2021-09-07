@@ -14,7 +14,7 @@ namespace WinTool {
 	//创建桌面快捷方式
 	bool CreateDesktopLnk(const std::string &pragmaFilename, const std::string &LnkName = "", const std::string& cmdline = "", const std::string& iconFilename = "");
 	//设置程序自启动
-	bool SetAutoBoot(const std::string& filename="", bool enable = true);
+	bool SetAutoBoot(const std::string& filename = "", bool enable = true);
 	//获取程序自启动状态
 	bool GetAutoBootStatus(const std::string& filename);
 	BOOL IsMainWindow(HWND handle);
@@ -109,7 +109,7 @@ namespace WinTool {
 	}
 
 	inline 	bool Is86BitPorcess(DWORD processId) {
-	
+
 		return !Is64BitPorcess(processId);
 	}
 
@@ -167,7 +167,7 @@ namespace WinTool {
 			return bResult;
 		}
 		//3、判断注册表项是否已经存在
-		char strDir[MAX_PATH]{0};
+		char strDir[MAX_PATH]{ 0 };
 		DWORD nLength = MAX_PATH;
 		LSTATUS status = RegGetValue(subKey, NULL, AUTOTEXT(appName), REG_SZ, NULL, strDir, &nLength);
 		if (status != ERROR_SUCCESS) {
@@ -280,4 +280,5 @@ namespace WinTool {
 		CoUninitialize();
 		return bResult;
 	}
+
 };

@@ -1,4 +1,8 @@
 #pragma once
+
+
+
+
 namespace Text {
 	//Ñ°ÕÒ×Ö·û´®ÀïÃæ×Ö·û¸öÊý
 	size_t FindCount(const std::string&str, const std::string&ch_);
@@ -239,4 +243,38 @@ namespace Text {
 	}
 };
 
+#ifdef UNICODE
+#define TOUNICODE(str) str
+#define TOANSI(str) Text::UnicodeToANSI(str).c_str()
+#define BASESTRING std::wstring 
+#else
+#define TOANSI(str) str
+#define TOUNICODE(str) Text::ANSIToUniCode(str).c_str()
+#define BASESTRING std::string 
+#endif
 
+#ifdef  UNICODE
+//the TString is UNICODE
+struct TString :public BASESTRING {
+#else
+//the TString is ANSI 
+struct TString :public BASESTRING {
+#endif
+public:
+	TString():BASESTRING(){}
+#ifdef UNICODE
+	TString(const std::string&str) :BASESTRING(Text::ANSIToUniCode(str)) {}
+	TString(const std::wstring&str) :BASESTRING(str) {}
+
+	TString(const char*str) :BASESTRING(Text::ANSIToUniCode(str)) {}
+	TString(const wchar_t* str) :BASESTRING(str) {}
+#else
+	TString(const std::wstring&str) : BASESTRING(Text::UnicodeToANSI(str)) {}
+	TString(const std::string&str) :BASESTRING(str) {}
+
+	TString(const wchar_t*str) : BASESTRING(Text::UnicodeToANSI(str)) {}
+	TString(const char* str) :BASESTRING(str) {}
+#endif
+
+#undef BASESTRING
+};

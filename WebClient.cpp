@@ -1,114 +1,25 @@
-#pragma once
-#ifndef CURL_STATICLIB
-#define CURL_STATICLIB
-#endif // !CURL_STATICLIB
-#include "curl/curl.h"
-#include "curl/easy.h"
-#ifdef _DEBUG
-#pragma comment(lib,"libcurld.lib")
-#else
-#pragma comment(lib,"libcurl.lib")
-#endif // !_DEBUG
-#pragma comment(lib,"Crypt32.lib")//curl需要的库
-#pragma comment(lib,"wldap32.lib")//curl需要的库
-#pragma comment(lib,"ws2_32.lib") //curl需要的库
-//接收响应body
-extern size_t g_curl_receive_callback(char *contents, size_t size, size_t nmemb, void *respone);
-//接收下载文件
-extern size_t g_curl_download_callback(char *contents, size_t size, size_t nmemb, void *_fielname);
-//接受上传或者下载进度
-extern int g_curl_progress_callback(void *ptr, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow);
-//下载进度回调函数模型
-typedef std::function<void(curl_off_t total, curl_off_t now, float rate)> ProgressFunc;
-//curl的初始化
-static bool g_curl_bInit = false;
-
-class Proxy {
-public:
-	std::string host;
-	unsigned int port;
-	curl_proxytype proxytype = CURLPROXY_SOCKS5;
-	std::string user;
-	std::string password;
-	inline Proxy(const std::string &host, size_t port, const curl_proxytype &curl_proxytype = CURLPROXY_SOCKS5, const std::string& user = "", const std::string&password = "") {
-		this->host = host;
-		this->port = port;
-		this->proxytype = curl_proxytype;
-		this->user = user;
-		this->password = password;
-	}
-};
-namespace Form {
-	//字段类型
-	enum FieldType :char
-	{
-		None,
-		Text,
-		File
-	};
-	class Field {
-	public:
-		FieldType FieldType = FieldType::None;
-		std::string FieldName;
-		std::string FieldValue;
-
-		std::string FileName;
-		Field(const std::string & FieldName, const std::string &ValueOrFullFileName, Form::FieldType FieldType = Form::FieldType::Text) {
-			this->FieldName = FieldName;
-			this->FieldType = FieldType;
-			if (FieldType == Form::FieldType::File) {
-				this->FieldValue = Path::GetFileName(ValueOrFullFileName);
-				this->FileName = ValueOrFullFileName;
-			}
-			else {
-				this->FieldValue = ValueOrFullFileName;
-			}
-		}
-	};
-}
-
-class WebClient
-{
-private:
-	CURL*  Init(const std::string &url, std::string& resp, int timeOut);
-	long CleanUp(CURL* curl, CURLcode code);
-	std::map<std::string, std::string> Header;
-	struct curl_slist *curl_header = NULL;
-public:
-	std::string Cookies;
-	WebClient();
-	virtual ~WebClient();
-	Proxy *Proxy = NULL;
-	void AddHeader(const std::string&key, const std::string&value);
-	void RemoveHeader(const std::string&key);
-	int DownloadFile(const std::string & strUrl, const std::string & filename, const ProgressFunc&progressCallback = NULL, int nTimeout = 20);
-	int HttpGet(const std::string & strUrl, std::string & strResponse, int nTimeout = 20);
-	int HttpPost(const std::string & strUrl, const std::string & data, std::string & respone, int nTimeout = 20);
-	int SubmitForm(const std::string &strUrl, const std::vector<Form::Field>& fieldValues, std::string& respone, int nTimeout = 20);
-	int UploadFile(const std::string &strUrl, const std::string &filename, const std::string &field, std::string &respone, const ProgressFunc&progressCallback = NULL, int nTimeout = 30);
-	int FtpDownLoad(const std::string& strUrl, const std::string&user, const std::string&pwd, const std::string &outFileName, int nTimeout = 30);
-};
-
+#include "WebClient.h"
+#include "os.h"
 //定义
 //bool WebClient::g_curl_bInit = false;
-inline WebClient::WebClient() {
+WebClient::WebClient() {
 	if (!g_curl_bInit) {
 		curl_global_init(CURL_GLOBAL_ALL); //初始化curl
 		g_curl_bInit = true;
 	}
 }
-inline WebClient::~WebClient() {
+WebClient::~WebClient() {
 	if (this->Proxy) {
 		delete this->Proxy;
 	}
 }
-inline size_t g_curl_receive_callback(char *contents, size_t size, size_t nmemb, void *respone) {
+size_t g_curl_receive_callback(char *contents, size_t size, size_t nmemb, void *respone) {
 	size_t count = size * nmemb;
 	std::string *str = (std::string*)respone;
 	(*str).append(contents, count);
 	return count;
 };
-inline size_t g_curl_download_callback(char *contents, size_t size, size_t nmemb, void *fielname) {
+size_t g_curl_download_callback(char *contents, size_t size, size_t nmemb, void *fielname) {
 	std::ofstream  ofs((char*)fielname, std::ios::app | std::ios::binary);
 	size_t count = size * nmemb;
 	ofs.write(contents, count);
@@ -116,14 +27,14 @@ inline size_t g_curl_download_callback(char *contents, size_t size, size_t nmemb
 	ofs.close();
 	return count;
 }
-inline int g_curl_progress_callback(void *ptr, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow)
+int g_curl_progress_callback(void *ptr, curl_off_t dltotal, curl_off_t dlnow, curl_off_t ultotal, curl_off_t ulnow)
 {
 	if (dltotal != 0 && ptr) {
 		(*(ProgressFunc*)ptr)(dltotal, dlnow, dlnow / (dltotal * 1.0) * 100);
 	}
 	return 0;
 }
-inline CURL* WebClient::Init(const std::string &strUrl, std::string& strResponse, int nTimeout) {
+CURL* WebClient::Init(const std::string &strUrl, std::string& strResponse, int nTimeout) {
 	CURL* curl = curl_easy_init();
 	if (!curl) {
 		return curl;
@@ -155,7 +66,7 @@ inline CURL* WebClient::Init(const std::string &strUrl, std::string& strResponse
 	curl_easy_setopt(curl, CURLOPT_HTTPHEADER, curl_header);
 	return curl;
 };
-inline long WebClient::CleanUp(CURL* curl, CURLcode code) {
+long WebClient::CleanUp(CURL* curl, CURLcode code) {
 	long RESPONSE_CODE = (int)code;
 	//如果执行成功,
 	if (code == CURLE_OK)
@@ -182,7 +93,7 @@ inline long WebClient::CleanUp(CURL* curl, CURLcode code) {
 	curl_easy_cleanup(curl);
 	return RESPONSE_CODE;
 };
-inline int WebClient::HttpGet(const std::string & strUrl, std::string & strResponse, int nTimeout) {
+int WebClient::HttpGet(const std::string & strUrl, std::string & strResponse, int nTimeout) {
 	CURL* curl = Init(strUrl, strResponse, nTimeout);
 	if (!curl) {
 		return CURLE_FAILED_INIT;
@@ -190,7 +101,7 @@ inline int WebClient::HttpGet(const std::string & strUrl, std::string & strRespo
 	CURLcode code = curl_easy_perform(curl);
 	return CleanUp(curl, code);
 };
-inline int WebClient::HttpPost(const std::string &url, const std::string &data, std::string &respone, int _timeout) {
+int WebClient::HttpPost(const std::string &url, const std::string &data, std::string &respone, int _timeout) {
 
 	CURL* curl = Init(url, respone, _timeout);
 	if (!curl) {
@@ -201,7 +112,7 @@ inline int WebClient::HttpPost(const std::string &url, const std::string &data, 
 	CURLcode code = curl_easy_perform(curl);
 	return CleanUp(curl, code);
 };
-inline int WebClient::UploadFile(const std::string &url, const std::string &filename, const std::string &field, std::string &respone, const ProgressFunc&progressCallback, int _timeout) {
+int WebClient::UploadFile(const std::string &url, const std::string &filename, const std::string &field, std::string &respone, const ProgressFunc&progressCallback, int _timeout) {
 
 	CURL* curl = Init(url, respone, _timeout);
 	if (!curl) {
@@ -227,7 +138,7 @@ inline int WebClient::UploadFile(const std::string &url, const std::string &file
 
 	return CleanUp(curl, code);
 };
-inline int WebClient::SubmitForm(const std::string &strUrl, const std::vector<Form::Field>& fieldValues, std::string& respone, int nTimeout) {
+int WebClient::SubmitForm(const std::string &strUrl, const std::vector<Form::Field>& fieldValues, std::string& respone, int nTimeout) {
 
 	AddHeader("Content-Type", "multipart/form-data");
 	CURL* curl = Init(strUrl, respone, nTimeout);
@@ -259,7 +170,7 @@ inline int WebClient::SubmitForm(const std::string &strUrl, const std::vector<Fo
 	return CleanUp(curl, code);
 
 };
-inline int WebClient::DownloadFile(const std::string &url, const std::string &_filename, const ProgressFunc&progressCallback, int nTimeout) {
+int WebClient::DownloadFile(const std::string &url, const std::string &_filename, const ProgressFunc&progressCallback, int nTimeout) {
 	std::string resp;
 	CURL* curl = Init(url, resp, nTimeout);
 	if (!curl) {
@@ -278,7 +189,7 @@ inline int WebClient::DownloadFile(const std::string &url, const std::string &_f
 	CURLcode  code = curl_easy_perform(curl);
 	return CleanUp(curl, code);
 };
-inline int WebClient::FtpDownLoad(const std::string& strUrl, const std::string&user, const std::string&pwd, const std::string &outFileName, int nTimeout) {
+int WebClient::FtpDownLoad(const std::string& strUrl, const std::string&user, const std::string&pwd, const std::string &outFileName, int nTimeout) {
 
 	std::string resp;
 	CURL* curl = Init(strUrl, resp, nTimeout);
@@ -296,11 +207,12 @@ inline int WebClient::FtpDownLoad(const std::string& strUrl, const std::string&u
 	CURLcode code = curl_easy_perform(curl);
 	return CleanUp(curl, code);
 }
-inline void WebClient::AddHeader(const std::string & key, const std::string & value)
+void WebClient::AddHeader(const std::string & key, const std::string & value)
 {
 	Header.insert(std::pair<std::string, std::string>(key, value));
 }
-inline void WebClient::RemoveHeader(const std::string & key)
+void WebClient::RemoveHeader(const std::string & key)
 {
 	Header.erase(key);
 };
+
