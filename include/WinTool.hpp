@@ -4,6 +4,8 @@
 #include <ShObjIdl.h>
 #include <ShlGuid.h>
 #include <psapi.h>
+#include <process.h>
+
 namespace WinTool {
 	typedef struct {
 		unsigned long processId;
@@ -36,11 +38,12 @@ namespace WinTool {
 	//获取进程是不是64位的
 	bool Is64BitPorcess(DWORD processId);
 	bool Is86BitPorcess(DWORD processId);
+	//获取当前进程ID
+	DWORD GetCurrentProcessId();
 }
 namespace WinTool {
-	inline BOOL IsMainWindow(HWND handle)
-	{
-		return GetWindow(handle, GW_OWNER) == (HWND)0 && IsWindowVisible(handle);
+	inline DWORD GetCurrentProcessId() {
+		return ::getpid();
 	}
 	inline HWND FindMainWindow(DWORD processId)
 	{
@@ -53,14 +56,19 @@ namespace WinTool {
 	inline BOOL CALLBACK EnumWindowsCallback(HWND handle, LPARAM lParam)
 	{
 		handle_data& data = *(handle_data*)lParam;
-		unsigned long processId = 0;
-		::GetWindowThreadProcessId(handle, &processId);
-		if (data.processId != processId || !IsMainWindow(handle)) {
-			return TRUE;
-		}
+		HWND hwnd = ::GetWindow(handle, GW_OWNER);
 		data.best_handle = handle;
+		return 0;
+
+		//unsigned long processId = 0;
+		//::GetWindowThreadProcessId(handle, &processId);
+		//if (data.processId != processId || !IsMainWindow(handle)) {
+		//	return TRUE;
+		//}
+		//data.best_handle = handle;
 		return FALSE;
 	}
+
 	inline std::vector<PROCESSENTRY32> FindProcessInfo(const std::string& _proccname) {
 
 		std::vector<PROCESSENTRY32> infos;
@@ -81,6 +89,7 @@ namespace WinTool {
 			}
 			else {
 				if (item == _proccname) {
+					infos.push_back(pe);
 				}
 			}
 			//printf("%s %d\n", item.data(),pe.th32processId);

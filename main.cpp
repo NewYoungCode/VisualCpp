@@ -37,12 +37,12 @@ int main(int count, char*args[]) {
 	////移除某个事件
 	//funcs -= eventid;
 	////for (;;) {
-	////	WebClient wc;
-	////	wc.AddHeader("User-Agent", "不知名浏览器");
-	////	wc.AddHeader("User-Agentx", "xxx");
-	////	wc.RemoveHeader("User-Agentxx");
-	////	std::string str;
-	////	auto code = wc.HttpGet("http://127.0.0.1/test", str);
+		WebClient wc;
+		wc.AddHeader("User-Agent", "不知名浏览器");
+		wc.AddHeader("User-Agentx", "xxx");
+		wc.RemoveHeader("User-Agentxx");
+		std::string str;
+		auto code = wc.HttpGet("http://baidu.com", str);
 	////	break;
 	////}
 

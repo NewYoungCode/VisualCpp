@@ -160,7 +160,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="WebClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Base64.hpp" />
@@ -181,7 +180,7 @@
     <ClInclude Include="include\Text.hpp" />
     <ClInclude Include="include\ThreadPool.hpp" />
     <ClInclude Include="include\Time.hpp" />
-    <ClInclude Include="include\WebClient.h" />
+    <ClInclude Include="include\WebClient.hpp" />
     <ClInclude Include="include\WinTool.hpp" />
     <ClInclude Include="TString.hpp" />
   </ItemGroup>
