@@ -33,6 +33,9 @@ namespace Text {
 	//×Ö·û´®·Ö¸î
 	std::vector<std::string> Split(const std::string& str, const std::string& ch);
 
+	//É¾³ý×Ö·û´®
+	bool EraseString(std::string &out_in_str, const std::string& in_oldStr);
+
 	template<typename ...T>
 	void Format(LPTSTR buf, size_t strCount, LPCTSTR formatStr, T...args);
 
@@ -240,6 +243,15 @@ namespace Text {
 		pwBuf = NULL;
 		pBuf = NULL;
 		return strRet;
+	}
+
+	inline bool EraseString(std::string &out_in_str, const std::string& in_oldStr) {
+		auto pos = out_in_str.find(in_oldStr);
+		if (pos== 0) {
+			out_in_str.erase(pos, in_oldStr.size());
+			return true;
+		}
+		return false;
 	}
 };
 

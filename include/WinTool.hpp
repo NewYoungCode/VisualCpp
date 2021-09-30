@@ -40,8 +40,49 @@ namespace WinTool {
 	bool Is86BitPorcess(DWORD processId);
 	//获取当前进程ID
 	DWORD GetCurrentProcessId();
+	//获取系统信息
+	void SafeGetNativeSystemInfo(__out LPSYSTEM_INFO lpSystemInfo);
+	//获取系统位数
+	inline int GetSystemBits();
 }
 namespace WinTool {
+
+	// 获取系统信息
+	inline void SafeGetNativeSystemInfo(__out LPSYSTEM_INFO lpSystemInfo)
+	{
+		if (NULL == lpSystemInfo)
+		{
+			return;
+		}
+		typedef VOID(WINAPI *FuncGetSystemInfo)(LPSYSTEM_INFO lpSystemInfo);
+		FuncGetSystemInfo funcGetNativeSystemInfo = (FuncGetSystemInfo)GetProcAddress(GetModuleHandle(TEXT("kernel32")), "GetNativeSystemInfo");
+		// 优先使用 "GetNativeSystemInfo" 函数来获取系统信息
+		// 函数 "GetSystemInfo" 存在系统位数兼容性问题
+		if (NULL != funcGetNativeSystemInfo)
+		{
+			funcGetNativeSystemInfo(lpSystemInfo);
+		}
+		else
+		{
+			GetSystemInfo(lpSystemInfo);
+		}
+	}
+
+	// 获取操作系统位数
+	inline int GetSystemBits()
+	{
+		SYSTEM_INFO si;
+		SafeGetNativeSystemInfo(&si);
+		if (si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_AMD64 ||
+			si.wProcessorArchitecture == PROCESSOR_ARCHITECTURE_IA64)
+		{
+			return 64;
+		}
+		return 32;
+	}
+
+	
+
 	inline DWORD GetCurrentProcessId() {
 		return ::getpid();
 	}

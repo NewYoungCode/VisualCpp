@@ -25,6 +25,11 @@ private:
 		return ::WritePrivateProfileStringA(_section.c_str(), key.c_str(), Value.c_str(), absoluteFilename.c_str()) == 0 ? false : true;
 	}
 public:
+
+	ConfigIni() {
+	
+	}
+
 	//FileName //一定要绝对路径
 	ConfigIni(const std::string& filename, const std::string &defaultSection = "setting", bool create = true, size_t buffSize = MAX_PATH) {
 		this->buffSize = buffSize;
