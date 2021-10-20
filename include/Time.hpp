@@ -47,7 +47,7 @@ namespace Time {
 			formatStr = Text::ReplaceAll(formatStr, "mmmm", wMilliseconds);
 			return formatStr;
 		}
-
+		
 		template<class T>
 		//统计函数耗时时间
 		inline time_t StopWatch(const T&_func) {

@@ -330,5 +330,4 @@ namespace WinTool {
 		CoUninitialize();
 		return bResult;
 	}
-
 };

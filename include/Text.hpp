@@ -162,6 +162,7 @@ namespace Text {
 	}
 	inline std::vector<std::string> Split(const std::string& str, const std::string& ch_) {
 		std::vector<std::string> arr;
+		if (str.empty()) return arr;
 		std::string buf = str;
 		size_t pos = buf.find(ch_);
 		if (pos == std::string::npos) {
